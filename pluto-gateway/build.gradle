@@ -1,0 +1,12 @@
+dependencies {
+    implementation(
+            project(':pluto-common:pluto-common-basic'),
+
+            'org.springframework.cloud:spring-cloud-starter-gateway',
+            'org.springframework.boot:spring-boot-starter-security',
+
+            'io.jsonwebtoken:jjwt:0.9.1'
+
+    )
+
+}

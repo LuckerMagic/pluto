@@ -1,0 +1,118 @@
+buildscript {
+    /*定义环境变量*/
+    ext {
+        springIOVersion = '1.0.11.RELEASE'
+        springBootVersion = '2.4.3'
+    }
+    /*脚本运行的依赖*/
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+        maven { url 'http://maven.springframework.org/release' }
+        maven { url 'http://maven.springframework.org/milestone' }
+    }
+
+    /*定义依赖的springboot版本*/
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:${springIOVersion}"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+//所有的工程都会执行这个task
+allprojects {
+    group 'com.pluto'
+    version '1.0.0-SNAPSHOT'
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    //插件
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    //在这里定义公用依赖
+    dependencies {
+        /**热部署和lombok*/
+        runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+
+        annotationProcessor 'org.projectlombok:lombok:1.18.2'
+        compileOnly 'org.projectlombok:lombok:1.18.2'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
+        testCompileOnly 'org.projectlombok:lombok:1.18.2'
+
+        /**通用工具*/
+        implementation('org.apache.commons:commons-lang3:3.8')
+        implementation('com.alibaba:fastjson:1.2.47')
+
+        // https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+        implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
+
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    jar.enabled(true)
+}
+/**定义只有子工程才会执行的task*/
+subprojects{
+    repositories {
+        mavenCentral()
+    }
+
+    ext {
+        set('springCloudVersion', "2020.0.1")
+        set('springCloudAlibabaVersion', "2.2.5.RELEASE")
+    }
+
+    dependencies {
+//        implementation 'org.springframework.boot:spring-boot-starter-amqp'
+//        implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+//        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//        implementation 'org.springframework.boot:spring-boot-starter-security'
+//        implementation 'org.springframework.boot:spring-boot-starter-web'
+          implementation 'org.springframework.boot:spring-boot-starter-webflux'
+//        implementation 'org.springframework.cloud:spring-cloud-config-server'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+//        compileOnly 'org.projectlombok:lombok'
+//        runtimeOnly 'mysql:mysql-connector-java'
+//        annotationProcessor 'org.projectlombok:lombok'
+//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//        testImplementation 'io.projectreactor:reactor-test'
+//        testImplementation 'org.springframework.amqp:spring-rabbit-test'
+//        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}

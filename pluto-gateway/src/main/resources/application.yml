@@ -1,0 +1,12 @@
+server:
+  port: 7005
+spring:
+  application:
+    name: gateway
+security:
+  noFilter: "/login"
+jwt:
+  token:
+    expired: 30000
+    refresh:
+      expired: 60000

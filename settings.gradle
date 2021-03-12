@@ -1,0 +1,10 @@
+rootProject.name = 'pluto'
+
+include(
+        'pluto-admin',
+        'pluto-user',
+        'pluto-auth',
+        'pluto-gateway',
+        'pluto-common',
+        'pluto-common:pluto-common-basic',
+)
